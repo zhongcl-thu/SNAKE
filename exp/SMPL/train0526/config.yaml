@@ -1,0 +1,121 @@
+common:
+    method: ours 
+
+    net:
+        type: SNAKE
+        kwargs:
+            c_dim: 32
+            input_type: pointcloud
+            sigmoid: True
+
+            encoder: pointnet_local_pool
+            encoder_kwargs:
+                hidden_dim: 32
+                plane_type: 'grid'
+                grid_resolution: [64, 64, 64]
+                unet3d: True
+                unet3d_kwargs:
+                    num_levels: 4
+                    f_maps: 32
+                    in_channels: 32
+                    out_channels: 32
+            
+            decoder:
+                decoder_occup: 
+                    decoder_type: simple_local
+                    decoder_kwargs:
+                        sample_mode: bilinear # bilinear / nearest
+                        hidden_size: 32
+                
+                decoder_keypoint: 
+                    decoder_type: simple_local
+                    decoder_kwargs:
+                        sample_mode: bilinear # bilinear / nearest
+                        hidden_size: 32
+                        # shared_layers: 0 # occupancy and keypoint shared layers
+
+    solver:
+        type: Solver
+    
+    loss:
+        loss1:
+            type: Occupancy_loss
+            kwargs:
+                weight: 1.0
+        
+        loss2:
+            type: CosimLoss
+            kwargs:
+                weight: 1.0
+        
+        loss3:
+            type: Sparsity_Loss
+            kwargs:
+                weight: 1.0
+                occp_thr: 0.5
+                occp_point_ratio: 0.05
+        
+        loss4:
+            type: Surface_Loss
+            kwargs:
+                weight: 1.0
+    
+    public_params:
+        input_pcd_num: 2048
+        on_occupancy_num: 1000 # 1000
+        off_occupancy_num: 1000 # 1000
+        padding: 0.125
+        grid_reso: 8
+        x_res_grid: [-0.5, 0.5, 8]
+        y_res_grid: [-0.5, 0.5, 8]
+        z_res_grid: [-0.5, 0.5, 8]
+        total_grid_num: 300 #500
+        z_min: -0.5
+        z_max: 0.5
+    
+    optim:
+        type: Adam
+        kwargs:
+            weight_decay: 0.0005
+            #momentum: 0.9
+            #nesterov: True
+    
+    lr_scheduler:
+        type: Step
+        kwargs:
+            lr_step_size: [20]
+            lr_mults: 0.1
+            base_lr: 0.0001
+
+    workers: 8
+    batch_size: 8
+
+    max_epoch: 30
+    print_freq: 100
+    val_freq: 100
+    save_interval: 5000
+    save_epoch_interval: 10
+    deterministic: True
+    random_seed: 11
+    
+augmentation:
+    do_aug: True
+    rotate_angle: 360
+    rotate_dim: 3D
+    sigma: 0.005
+    clip: 0.01
+    translation_perturbation: False
+    shift_x: [-0.4, 0.4]
+    shift_y: [-0.4, 0.4]
+    shift_z: [-0.05, 0.05]
+    mean_pcd: False
+    
+
+data_info:
+    dataset_name: SMPL
+    data_path: data/smpl_model/model.pkl
+    train_len: 1000
+    val_len: 100
+
+evaluate:
+    

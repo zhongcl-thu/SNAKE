@@ -1,0 +1,97 @@
+common:
+    method: ours 
+
+    net:
+        type: SNAKE
+        kwargs:
+            c_dim: 32
+            input_type: pointcloud
+            sigmoid: True
+
+            encoder: pointnet_local_pool
+            encoder_kwargs:
+                hidden_dim: 32
+                plane_type: 'grid'
+                grid_resolution: [64,64,64]
+                unet3d: True
+                unet3d_kwargs:
+                    num_levels: 4
+                    f_maps: 32
+                    in_channels: 32
+                    out_channels: 32
+            
+            decoder:
+                decoder_occup: 
+                    decoder_type: simple_local
+                    decoder_kwargs:
+                        sample_mode: bilinear # bilinear / nearest
+                        hidden_size: 32
+                
+                decoder_keypoint: 
+                    decoder_type: simple_local
+                    decoder_kwargs:
+                        sample_mode: bilinear # bilinear / nearest
+                        hidden_size: 32
+    
+    solver:
+        type: Solver
+    
+    public_params:
+        input_pcd_num: 2048
+        on_occupancy_num: 2000 # 1000
+        off_occupancy_num: 500 # 1000
+        padding: 0.125
+        z_min: -0.5
+        z_max: 0.5
+
+    workers: 4
+    batch_size: 4
+    deterministic: True
+    random_seed: 1234
+
+augmentation :
+    do_aug: False
+    rotate_angle: 360
+    rotate_dim: 3D
+    translation_perturbation: False
+    sigma: 0.005
+    clip: 0.02
+    shift: [-0.1, 0.1]
+    mean_pcd: False
+    height_scaling: False
+
+
+data_info:
+    dataset_name: KeypointNet
+    data_path: data/keypointnet_pcds/
+    test_file: core/datasets/split/keypointnet_test_full.txt
+    model_path: checkpoints/model_best.pth
+
+
+test:
+    grid_sample: True
+    grid_kwargs:
+        x_res: 64
+        y_res: 64
+        z_res: 64
+    
+    noise_std: 0
+    downsample: 1
+
+    saliency_thr: 0.7
+    occupancy_thr: 0.8
+    nms_thr: 0.1
+    repeat_thr: 0.03
+
+    update_max: 10
+
+    total_kps: 64
+    
+    loss:
+
+    optim:
+        type: Adam
+        kwargs:
+            lr: 0.001
+            #momentum: 0.9
+            #nesterov: True
