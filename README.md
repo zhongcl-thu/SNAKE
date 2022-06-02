@@ -150,6 +150,9 @@ Show predicted saliency field slice, run:
 sh exp/[dataset_name]/train0526/test.sh show_sal_slice
 ```
 
+<p align="center"><img src="media/sem.png" width="500" /></p>
+
+
 Show extract keypoints on the KeypointNet dataset, run:
 ```
 python tools/keypoint_show.py
