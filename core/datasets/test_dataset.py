@@ -258,3 +258,22 @@ class Match3d_test(Redwood_test):
             coords = pcd_data
 
         return coords
+    
+    def __getitem__(self, index):
+        name = self.filenames[index]
+        # get pcd1
+        pcd_path_1 = os.path.join(self.pcd_root, name + '.npy')
+        pcd_data_1 = np.load(pcd_path_1)[:, :3]
+
+        pcd_data_1, scale_1, center_1 = self.normalize_pcd(pcd_data_1)
+
+        pcd_data_s1 = self.prepare_input_data(pcd_data_1, self.down_sample)
+        coords_1 = self.prepare_occupancy_data(pcd_data_s1)
+
+        pcd_data_s1 = torch.from_numpy(pcd_data_s1).float()
+        coords_1 = torch.from_numpy(coords_1).float()
+
+        inputs = {'point_cloud_1': pcd_data_s1, 'occup_coords_1': coords_1, 
+                    'scale_1': scale_1, 'center_1': center_1}
+        
+        return inputs
