@@ -1,6 +1,6 @@
 # SNAKE: Shape-aware Neural 3D Keypoint Field
 
-This repository contains the implementation of the following [paper]():
+This repository contains the implementation of the following [paper](https://arxiv.org/abs/2206.01724):
 
 SNAKE: Shape-aware Neural 3D Keypoint Field  
 [Chengliang Zhong](https://zhongcl-thu.github.io/), Peixing You, Xiaoxue Chen, [Hao Zhao](https://sites.google.com/view/fromandto), [Fuchun Sun](https://scholar.google.com/citations?user=DbviELoAAAAJ&hl=en), [Guyue Zhou](https://air.tsinghua.edu.cn/en/info/1046/1196.htm), Xiaodong Mu, [Chuang Gan](https://people.csail.mit.edu/ganchuang/), [Wenbing Huang](https://scholar.google.com/citations?user=0yNkmO4AAAAJ&hl=zh-CN)
