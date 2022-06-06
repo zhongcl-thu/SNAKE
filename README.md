@@ -14,7 +14,14 @@ SNAKE: Shape-aware Neural 3D Keypoint Field
 
 If you find our code or paper useful, please consider citing:
 ```bibtex
-@
+@misc{zhong2022snake,
+  author={Zhong, Chengliang and You, Peixing and Chen, Xiaoxue and Zhao, Hao and Sun, Fuchun and Zhou, Guyue and Mu, Xiaodong and Gan, Chuang and Huang, Wenbing},
+  title={SNAKE: Shape-aware Neural 3D Keypoint Field},
+  year={2022},
+  eprint={2206.01724},
+  archivePrefix={arXiv},
+  primaryClass={cs.CV}
+}
 ```
 
 
@@ -90,7 +97,7 @@ If train on multiple GPUs, modify the values of 'CUDA_VISIBLE_DEVICES' and 'npro
 sh exp/[dataset_name]/train0526/train_multi.sh
 ```
 
-## Extract and save keypoints
+## Extract and Save Keypoints
 
 ```
 sh exp/[dataset_name]/train0526/test.sh save_kpts
@@ -159,7 +166,7 @@ python tools/keypoint_show.py
 ```
 
 
-## Pretrained models
+## Pretrained Models
 
 We provide pretrained models on [Google Drive](https://drive.google.com/drive/folders/1i5lzEt6epYk2IfGJNESL3Tulbg6uH-PF?usp=sharing) and [Baidu Netdisk](https://pan.baidu.com/s/10HkbgFTGuQ4yPlZIOtdTMw): an3m. Move the models to *exp/[dataset_name]/train0526/checkpoints/*. 
 
