@@ -89,7 +89,7 @@ class Evaluator:
         self.kp_radius = 0.01
         if self.data_config.dataset_name == 'ModelNet40':
             self.test_dataset = ModelNet40_Test(self.C.config, 'test')
-        elif self.data_config.dataset_name == 'redwood':
+        elif self.data_config.dataset_name == 'Redwood':
             self.test_dataset = Redwood_test(self.C.config, 'test')
             self.kp_radius = 0.03
         elif self.data_config.dataset_name == 'KeypointNet':
@@ -183,7 +183,15 @@ class Evaluator:
         return torch.stack(input_coord_new), batch_freq
 
 
-    def find_keypoint(self, input_var, idx, show=False):
+    def find_keypoint(self, input_var, idx, sel_strategy='best', show=False):
+        '''
+        input_var: point_cloud, occupancy_coordinates(on/off)
+        idx: view index
+        sel_strategy: keypoint selection strategy. values: ['last', 'best']. 
+                      'last': select keypoints after the last optimization iteration.
+                      'best': select keypoints with the highest salient scores during the whole optimizations.
+                      Note that the preformance of the two strategies is similar. 
+        '''
         input_pcd = input_var['point_cloud_' + idx].detach()
         input_coord = input_var['occup_coords_' + idx]
         
@@ -220,8 +228,14 @@ class Evaluator:
             saliency_scores.append(outputs['sal'+idx] * occp_mask)
             kpts.append(input_coord)
         
-        saliency_scores, max_index = torch.stack(saliency_scores, 2).max(2)
         kpts = torch.stack(kpts, 2)
+
+        if sel_strategy == 'last':
+            saliency_scores = saliency_scores[self.config_test.update_max-1] # B, N
+            max_index = torch.ones_like(saliency_scores) * (self.config_test.update_max-1)
+            max_index = max_index.long().cuda()
+        elif sel_strategy == 'best':
+            saliency_scores, max_index = torch.stack(saliency_scores, 2).max(2)
 
         with torch.no_grad():
             kpts_nms = []
@@ -231,7 +245,6 @@ class Evaluator:
                 max_index_j = max_index[j, :batch_freq[j]].unsqueeze(1).unsqueeze(2)
                 max_index_j = max_index_j.repeat(1, 1, 3)
 
-                # select the keypoint with highest saliency during the optimization
                 kpts_j_max = kpts[j, :batch_freq[j]].gather(dim=1, index=max_index_j).squeeze(1)
                 kpts_j_select = kpts_j_max[sal_j > self.config_test.saliency_thr, :].cpu().numpy()
                 score_j_select = sal_j[sal_j > self.config_test.saliency_thr].cpu().numpy()
@@ -277,18 +290,21 @@ class Evaluator:
         
         for iteration, tmp.input_var in enumerate(tqdm.tqdm(self.test_loader)):
             self.prepare_data()
-            kpts1, desc1 = self.find_keypoint(tmp.input_var, idx='1')
+            kpts1, desc1 = self.find_keypoint(tmp.input_var, idx='1', 
+                                            sel_strategy=self.config_test.sel_strategy)
             
             if self.data_config.dataset_name != 'SMPL':
                 kpts1_all.extend(kpts1)
                 desc1_all.extend(desc1)
 
                 if self.data_config.dataset_name == 'ModelNet40':
-                    kpts2, desc2 = self.find_keypoint(tmp.input_var, idx='2')
+                    kpts2, desc2 = self.find_keypoint(tmp.input_var, idx='2', 
+                                                sel_strategy=self.config_test.sel_strategy)
                     kpts2_all.extend(kpts2)
                     desc2_all.extend(desc2)
             else:
-                kpts2, desc2 = self.find_keypoint(tmp.input_var, idx='2')
+                kpts2, desc2 = self.find_keypoint(tmp.input_var, idx='2', 
+                                                sel_strategy=self.config_test.sel_strategy)
                 for i in range(len(kpts1)):
                     scale1 = tmp.input_var['scale_1'][i].cpu().numpy()
                     center1 = tmp.input_var['center_1'][i].cpu().numpy()
@@ -319,7 +335,7 @@ class Evaluator:
             kpts2_all = np.array(kpts2_all)
             np.save(self.save_root + '/kpts1.npy', kpts1_all)
             np.save(self.save_root + '/kpts2.npy', kpts2_all)
-        elif self.data_config.dataset_name == 'redwood':
+        elif self.data_config.dataset_name == 'Redwood':
             num = 0
             redwood_scene = {'livingroom1': 57, 'livingroom2': 47, 'office1': 53, 'office2': 50}
             for k,v in redwood_scene.items():

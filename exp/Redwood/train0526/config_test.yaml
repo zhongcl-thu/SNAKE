@@ -62,7 +62,7 @@ augmentation :
 
 
 data_info:
-    dataset_name: redwood
+    dataset_name: Redwood
     data_path: data/redwood/numpy_gt_normal/
     test_file: core/datasets/split/redwood_test.txt
     model_path: checkpoints/model_best.pth
@@ -83,7 +83,8 @@ test:
     nms_thr: 0.04
     repeat_thr: 0.1
 
-    update_max: 10
+    update_max: 10 # optimization iterations
+    sel_strategy: best # best/last
 
     total_kps: 512
     

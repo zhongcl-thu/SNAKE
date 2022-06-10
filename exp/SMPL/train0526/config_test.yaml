@@ -84,7 +84,8 @@ test:
     nms_thr: 0.1
     repeat_thr: 0.03
 
-    update_max: 10
+    update_max: 10 # optimization iterations
+    sel_strategy: best # best/last
 
     total_kps: 64
     
