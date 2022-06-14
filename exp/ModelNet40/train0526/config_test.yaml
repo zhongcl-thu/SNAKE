@@ -37,7 +37,7 @@ common:
         type: Solver
     
     public_params:
-        input_pcd_num: 2048
+        input_pcd_num: 5000
         on_occupancy_num: 2000 # 1000
         off_occupancy_num: 500 # 1000
         padding: 0.125
@@ -45,7 +45,7 @@ common:
         z_max: 0.5
 
     workers: 4
-    batch_size: 1
+    batch_size: 4
     deterministic: True
     random_seed: 1234
 

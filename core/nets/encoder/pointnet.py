@@ -206,7 +206,7 @@ class LocalPoolPointnet(nn.Module):
             net = torch.cat([net, pooled], dim=2)
             net = block(net)
         
-        c = self.fc_c(net) #Batch, Nume, dim
+        c = self.fc_c(net) # Batch, Num, dim
 
         # 3D Unet
         fea = {}
