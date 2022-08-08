@@ -162,7 +162,7 @@ sh exp/[dataset_name]/train0526/test.sh show_sal_slice
 
 Show extract keypoints on the KeypointNet dataset, run:
 ```
-python tools/keypoint_show.py
+python tools/show_kpts.py
 ```
 
 Show surface reconstruction, run:
