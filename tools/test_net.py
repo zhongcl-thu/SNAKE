@@ -30,8 +30,8 @@ def main():
     
     if args.test_name == 'save_kpts':
         S.save_kpts()
-    elif args.test_name == 'show_occ':
-        S.show_occupancy()
+    elif args.test_name == 'show_recon':
+        S.show_reconstruction()
     elif args.test_name == 'show_sal_point':
         S.show_input_saliency()
     elif args.test_name == 'show_sal_slice':

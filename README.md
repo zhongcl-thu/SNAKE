@@ -122,7 +122,7 @@ python tools/eval_iou.py --dataset KeypointNet --test_root exp/KeypointNet/train
 
 **Note**: Test on ModelNet40 and Redwood. 
 
-Download the transformation matrix for each two-view point clouds([modelnet40](), [redwood]()), and move them to *data/modelnet40/modelnet40-test_rotated_numpy/* and *data/redwood/numpy_gt_normal/* respectively. Then, run:
+Download the transformation matrix for each two-view point clouds([modelnet40](https://drive.google.com/file/d/1cR_d0VrD8vxI6gzDkqC_-DO5uVd9WVQD/view?usp=sharing), [redwood](https://drive.google.com/file/d/1hTsZ4Edd8MmxmYxUPzM0qK8PbCHrO3AR/view?usp=sharing)), and move them to *data/modelnet40/modelnet40-test_rotated_numpy/* and *data/redwood/numpy_gt_normal/* respectively. Then, run:
 ```
 python tools/eval_repeat.py --test_dataset [dataset_name] --test_root exp/[dataset_name]/[result_name]
 ```
@@ -163,6 +163,11 @@ sh exp/[dataset_name]/train0526/test.sh show_sal_slice
 Show extract keypoints on the KeypointNet dataset, run:
 ```
 python tools/keypoint_show.py
+```
+
+Show surface reconstruction, run:
+```
+sh exp/[dataset_name]/train0526/test.sh show_recon
 ```
 
 
