@@ -11,7 +11,7 @@ class CosimLoss(nn.Module):
                         cos_point_ratio=0.9, **kw):
         nn.Module.__init__(self)
         self.name = 'repeatability_loss'
-        self.weight = weight
+        
         self.point_num_in_grid = x_res_grid[2] * y_res_grid[2] * z_res_grid[2]
         self.cos_point_ratio = cos_point_ratio
 
@@ -38,7 +38,7 @@ class CosimLoss(nn.Module):
         
         if cosim_loss_mask1.sum() > 0:
             cosim = (sal1_norm * sal2_norm).sum(dim=2)[cosim_loss_mask1]
-            return (1 - cosim.mean()) * self.weight
+            return 1 - cosim.mean()
         else:
             return torch.tensor(0).to(cosim_loss_mask1.device)
 
@@ -51,7 +51,6 @@ class Sparsity_Loss(nn.Module):
                  occp_point_ratio=0.1, inlier_point_ratio=0.8, **kw):
         nn.Module.__init__(self)
         self.name = 'sparsity_loss'
-        self.weight = weight
 
         self.point_num_in_grid = x_res_grid[2] * y_res_grid[2] * z_res_grid[2]
         self.z_res_grid = z_res_grid
@@ -100,7 +99,7 @@ class Sparsity_Loss(nn.Module):
         loss = 0.5 * (self.forward_one(sal1[:, N:], occ1[:, N:], grid_coords_mask_1) 
                         + self.forward_one(sal2[:, N:], occ2[:, N:], grid_coords_mask_2))
         
-        return loss * self.weight
+        return loss
 
 
 class Surface_Loss(nn.Module):
@@ -110,8 +109,7 @@ class Surface_Loss(nn.Module):
     def __init__(self, weight, **kw):
         nn.Module.__init__(self)
         self.name = 'surface_loss'
-        self.weight = weight
-
+        
 
     def forward(self, sal1, sal2, occ1, occ2, occup_labels_1,
                     grid_coords_mask_1, grid_coords_mask_2, **kw):
@@ -125,4 +123,4 @@ class Surface_Loss(nn.Module):
         loss = 0.5 * (((1 - occ1)*sal1)[sal_mask1].mean() + 
                         ((1 - occ2)*sal2)[sal_mask2].mean())
         
-        return loss * self.weight
+        return loss

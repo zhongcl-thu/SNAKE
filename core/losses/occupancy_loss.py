@@ -5,7 +5,6 @@ class Occupancy_loss (nn.Module):
     def __init__(self, weight, **kw):
         nn.Module.__init__(self)
         self.name = 'occupancy_loss'
-        self.weight = weight
 
     def forward_one(self, occ, occ_labels):
         occ_loss = -1 * (occ_labels * torch.log(occ + 1e-5) + 
@@ -19,5 +18,5 @@ class Occupancy_loss (nn.Module):
         occ_loss_all = 0.5 * (self.forward_one(occ1[:, :N], occup_labels_1) 
                             + self.forward_one(occ2[:, :N], occup_labels_2))
 
-        return occ_loss_all * self.weight
+        return occ_loss_all
 
