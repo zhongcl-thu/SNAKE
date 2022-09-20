@@ -11,6 +11,7 @@ class CosimLoss(nn.Module):
                         cos_point_ratio=0.9, **kw):
         nn.Module.__init__(self)
         self.name = 'repeatability_loss'
+        self.weight = weight
         
         self.point_num_in_grid = x_res_grid[2] * y_res_grid[2] * z_res_grid[2]
         self.cos_point_ratio = cos_point_ratio
@@ -28,7 +29,7 @@ class CosimLoss(nn.Module):
     def forward(self, sal1, sal2, occup_labels_1, grid_coords_mask_1, 
                     grid_coords_mask_2, **kw):
 
-        B, N = occup_labels_1.shape 
+        B, N = occup_labels_1.shape
 
         # the first N points are used to compute occpupancy loss
         sal1_norm, cosim_loss_mask1 = self.forward_one(sal1[:, N:], B, grid_coords_mask_1)
@@ -51,6 +52,7 @@ class Sparsity_Loss(nn.Module):
                  occp_point_ratio=0.1, inlier_point_ratio=0.8, **kw):
         nn.Module.__init__(self)
         self.name = 'sparsity_loss'
+        self.weight = weight
 
         self.point_num_in_grid = x_res_grid[2] * y_res_grid[2] * z_res_grid[2]
         self.z_res_grid = z_res_grid
@@ -109,6 +111,7 @@ class Surface_Loss(nn.Module):
     def __init__(self, weight, **kw):
         nn.Module.__init__(self)
         self.name = 'surface_loss'
+        self.weight = weight
         
 
     def forward(self, sal1, sal2, occ1, occ2, occup_labels_1,
