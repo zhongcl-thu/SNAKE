@@ -366,7 +366,7 @@ class Evaluator:
                 pcd_data = tmp.input_var['point_cloud_1'].cpu().numpy()[0]
 
                 pred_occ = outputs['occ1'].cpu().numpy()[0] #logits.
-                #pred_occ = np.log(pred_occ + 1e-8) - np.log(1 - pred_occ + 1e-8)
+                pred_occ = np.log(pred_occ + 1e-8) - np.log(1 - pred_occ + 1e-8)
                 pred_occ = pred_occ.reshape(self.config_test.grid_kwargs.x_res, 
                                             self.config_test.grid_kwargs.y_res, 
                                             self.config_test.grid_kwargs.z_res
